@@ -1,5 +1,49 @@
-# Vue 3 + TypeScript + Vite
+# 密码学大作业
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+叶力天 PB23151830
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## 功能特性
+
+1. 给定 明文 和 密钥，加密得到密文
+2. 给定 密文 和 密钥，解密得到密文
+3. 根据单字母、双字母、三字母频率分析，并参照英文原始频率给出破译建议
+4. 根据英文单词字典匹配未完成的单词，并计算对应的概率
+5. 随机生成密钥，逆置换密钥，预置密钥
+6. 可视化输入密钥，对比破译，频率分级柱状图，友好界面
+
+## 运行
+
+### 使用者
+
+Release 页面下载对应的程序直接打开即可。
+
+### 开发者
+
+#### 预备环境
+
+- Nodejs 22
+- yarn
+
+#### 安装需要的库
+
+```bash
+yarn
+```
+
+#### 打开 dev 服务器
+
+```bash
+yarn dev
+```
+
+#### 编译生成
+
+```bash
+yarn build
+```
+
+#### 单元测试
+
+```bash
+yarn test
+```
