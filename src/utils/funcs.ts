@@ -5,8 +5,20 @@
  */
 export function reverseKey(key: string): string {
     // 检查 key 是否为 26 个小写字母
-    if (key.length !== 26 || !/^[a-z]+$/.test(key)) {
-        throw new Error("Key must be a string of 26 lowercase letters.");
+    if (key.length !== 26) {
+        throw new Error('密钥长度必须是 26 个字符');
+    }
+
+    key = key.toLowerCase(); // 确保密钥是小写字母
+
+    if (!/^[a-z]+$/.test(key)) {
+        throw new Error('密钥必须只包含英文字母');
+    }
+
+    // 必须每个字母都出现一次
+    const letterSet = new Set(key);
+    if (letterSet.size !== 26) {
+        throw new Error('密钥必须是英文字母的排列，每个字母只能出现一次');
     }
 
     const newKeyDict: { [key: string]: string } = {};
@@ -68,6 +80,12 @@ export function encrypt(plaintext: string, key: string): string {
     return ciphertext;
 }
 
+/**
+ * 解密函数，使用逆置换密钥进行解密
+ * @param ciphertext 密文
+ * @param key 密钥
+ * @returns 解密后的明文
+ */
 export function decrypt(ciphertext: string, key: string): string {
     if (!ciphertext || !key) {
         throw new Error('请提供密文和密钥');
