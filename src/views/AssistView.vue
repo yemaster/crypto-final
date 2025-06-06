@@ -240,7 +240,7 @@ const suggestionMode: Record<SuggestionModeKey, {
 const nowSuggestionMode = ref<SuggestionModeKey>('intelligent');
 
 const keySuggestion = computed(() => {
-    if (!(plainText.value.includes('_')) && generatedKey.value.includes('_')) {
+    if (model.value.ciphertext.length > 0 && !(plainText.value.includes('_')) && generatedKey.value.includes('_')) {
         let newKey = generatedKey.value.split('');
         const used = Array.from({ length: 26 }, () => false);
         for (const char of newKey) {
@@ -321,7 +321,7 @@ onMounted(() => {
             </n-grid>
             <n-grid cols="5" item-responsive responsive="screen" :x-gap="18">
                 <n-grid-item span="5 m:5 l:3">
-                    <n-form-item label="密钥映射" path="key">
+                    <n-form-item label="字母映射" path="key">
                         <n-scrollbar x-scrollable>
                             <div
                                 style="white-space: nowrap; font-family: v-mono, SFMono-Regular, Menlo, Consolas, Courier, monospace;">
@@ -347,7 +347,7 @@ onMounted(() => {
                             </div>
                         </n-scrollbar>
                     </n-form-item>
-                    <n-form-item label="密钥">
+                    <n-form-item label="密钥(需要逆置换才可以用作解密)">
                         <n-input-group>
                             <n-input placeholder="自动生成的密钥" readonly :value="generatedKey"
                                 style="white-space: nowrap; font-family: v-mono, SFMono-Regular, Menlo, Consolas, Courier, monospace;" />
@@ -383,9 +383,9 @@ onMounted(() => {
                     <n-flex vertical justify="center">
                         <n-alert title="破译建议(点击即可自动应用)" type="info" :bordered="false"></n-alert>
                         <n-scrollbar style="height: 300px">
-                            <n-result status="success" title="Wow" description="已经破译完成。" size="small" v-if="!generatedKey.includes('_')"></n-result>
-                            <n-result status="info" title="Oops" description="暂时没有建议。" size="small" v-else-if="keySuggestion.length === 0"></n-result>
-                            <n-list hoverable clickable>
+                            <n-alert type="success" title="Wow" v-if="!generatedKey.includes('_')">已经破译完成。</n-alert>
+                            <n-alert type="warning" title="Oops" description="暂时没有建议。" v-else-if="keySuggestion.length === 0">暂时没有建议。</n-alert>
+                            <n-list hoverable clickable v-else>
                                 <n-list-item v-for="(s, i) in keySuggestion" @click="applySuggestion(i)">
                                     <n-thing :title="`参考建议${i + 1}`" content-style="margin-top: 10px;">
                                         <template #description>
