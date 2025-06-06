@@ -12,6 +12,7 @@ import Chart from 'chart.js/auto';
 
 import { getCharacterFrequency } from '../data/en_freq'
 import { calcFrequency, getSuggestion, getSuggestionByFrequencyAll, getSuggestionByWords } from '../utils/analyser'
+import { encrypt } from '../utils/funcs'
 
 const message = useMessage()
 const formStore = useFormStore()
@@ -169,6 +170,15 @@ function updateFrequencyChart(level: number | string) {
     drawFrequencyChart(level);
 }
 
+const plainText = computed(() => {
+    try {
+        return encrypt(model.value.ciphertext, generatedKey.value);
+    }
+    catch (error) {
+        return '';
+    }
+});
+
 const textComparison = computed(() => {
     const cipherLinesTmp = model.value.ciphertext.split('\n');
     const cipherLines = []
@@ -188,10 +198,10 @@ const textComparison = computed(() => {
         for (const c of i) {
             if (c >= 'a' && c <= 'z') {
                 const index = c.charCodeAt(0) - 97;
-                thisLineRes += key.value[index] || '-'; // 使用密钥映射
+                thisLineRes += key.value[index] || '_'; // 使用密钥映射
             } else if (c >= 'A' && c <= 'Z') {
                 const index = c.charCodeAt(0) - 65;
-                thisLineRes += (key.value[index] || '-').toUpperCase(); // 保持大写字母
+                thisLineRes += (key.value[index] || '_').toUpperCase(); // 保持大写字母
             } else {
                 thisLineRes += c; // 保持非字母字符不变
             }
@@ -204,7 +214,7 @@ const textComparison = computed(() => {
 const generatedKey = computed(() => {
     let generate = ""
     for (let i = 0; i < 26; i++) {
-        generate += key.value[i] || '-';
+       generate += key.value[i] || '_';
     }
     return generate;
 });
@@ -230,6 +240,31 @@ const suggestionMode: Record<SuggestionModeKey, {
 const nowSuggestionMode = ref<SuggestionModeKey>('intelligent');
 
 const keySuggestion = computed(() => {
+    if (!(plainText.value.includes('_')) && generatedKey.value.includes('_')) {
+        let newKey = generatedKey.value.split('');
+        const used = Array.from({ length: 26 }, () => false);
+        for (const char of newKey) {
+            if (char !== '_') {
+                used[char.charCodeAt(0) - 97] = true;
+            }
+        }
+        const unusedChars = [];
+        for (let i = 0; i < 26; i++) {
+            if (!used[i]) {
+                unusedChars.push(String.fromCharCode(i + 97));
+            }
+        }
+        for (let i = 0; i < newKey.length; i++) {
+            if (newKey[i] === '_') {
+                newKey[i] = unusedChars.shift() || '?';
+            }
+        }
+        return [{
+            suggestion: "已经破译成功，将未出现在密文的字符自动填入剩余字符",
+            newKey: newKey.join(''),
+            possibility: 100
+        }];
+    }
     try {
         let s = suggestionMode[nowSuggestionMode.value].func(model.value.ciphertext, generatedKey.value);
         // 如果是数组，就返回，否则变成数组
@@ -253,7 +288,7 @@ const keySuggestion = computed(() => {
 function applySuggestion(index: number) {
     const newKey = Array.from({ length: 26 }, () => "");
     for (let i = 0; i < 26; ++i) {
-        if (keySuggestion.value[index].newKey[i] !== '-') {
+        if (keySuggestion.value[index].newKey[i] !== '_') {
             newKey[i] = keySuggestion.value[index].newKey[i];
         }
     }
@@ -346,11 +381,10 @@ onMounted(() => {
                 </n-grid-item>
                 <n-grid-item span="5 m:5 l:2">
                     <n-flex vertical justify="center">
-                        <n-alert title="破译建议(点击即可自动应用)" type="info" :bordered="false">
-                        </n-alert>
+                        <n-alert title="破译建议(点击即可自动应用)" type="info" :bordered="false"></n-alert>
                         <n-scrollbar style="height: 300px">
-                            <n-result status="info" title="信息" description="暂时没有建议。" size="small" v-if="keySuggestion.length === 0">
-                            </n-result>
+                            <n-result status="success" title="Wow" description="已经破译完成。" size="small" v-if="!generatedKey.includes('_')"></n-result>
+                            <n-result status="info" title="Oops" description="暂时没有建议。" size="small" v-else-if="keySuggestion.length === 0"></n-result>
                             <n-list hoverable clickable>
                                 <n-list-item v-for="(s, i) in keySuggestion" @click="applySuggestion(i)">
                                     <n-thing :title="`参考建议${i + 1}`" content-style="margin-top: 10px;">

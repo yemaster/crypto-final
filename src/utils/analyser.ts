@@ -30,7 +30,7 @@ export function getSuggestionByFrequency(ciphertext: string, key: string, nums: 
         throw new Error('请提供密文和密钥');
     }
     const _key = key.toLowerCase().trim();
-    if (_key.length !== 26 || !/^[a-z\-]+$/.test(_key)) {
+    if (_key.length !== 26 || !/^[a-z_]+$/.test(_key)) {
         throw new Error('密钥格式不正确');
     }
 
@@ -82,7 +82,7 @@ export function getSuggestionByFrequency(ciphertext: string, key: string, nums: 
         let cipherSort = sortedFrequency[i][0];
         let flag = true;
         for (let j = 0; j < cipherSort.length; j++) {
-            if (_key[cipherSort.charCodeAt(j) - 97] !== '-' && _key[cipherSort.charCodeAt(j) - 97] !== target[j]) {
+            if (_key[cipherSort.charCodeAt(j) - 97] !== '_' && _key[cipherSort.charCodeAt(j) - 97] !== target[j]) {
                 flag = false;
                 break;
             }
@@ -242,7 +242,7 @@ export function getSuggestionByWords(ciphertext: string, key: string) {
     if (!ciphertext || !key) {
         throw new Error('请提供密文和密钥');
     }
-    const _key = key.toLowerCase().trim().replace(/\-/g, '_');
+    const _key = key.toLowerCase().trim();
     if (_key.length !== 26 || !/^[a-z_]+$/.test(_key)) {
         throw new Error('密钥格式不正确');
     }
@@ -257,7 +257,7 @@ export function getSuggestionByWords(ciphertext: string, key: string) {
 
     const cipherWords = ciphertext.match(/\b[a-z\-]+\b/g) || [];
     const plaintext = encrypt(ciphertext, _key);
-    const plainWords = plaintext.match(/\b[a-z_\-]+\b/g) || [];
+    const plainWords = plaintext.match(/\b[a-z\-_]+\b/g) || [];
     const unknownCharsNum = [];
     for (const word of cipherWords) {
         unknownCharsNum.push(word.split('').filter(char => _key[char.charCodeAt(0) - 97] === '_').length);
@@ -342,7 +342,7 @@ export function getSuggestion(ciphertext: string, key: string) {
         throw new Error('请提供密文和密钥');
     }
     const _key = key.toLowerCase().trim(); // 确保密钥是小写字母
-    if (_key.length !== 26 || !/^[a-z\-]+$/.test(_key)) {
+    if (_key.length !== 26 || !/^[a-z\-_]+$/.test(_key)) {
         throw new Error('密钥格式不正确');
     }
 
@@ -376,8 +376,8 @@ export function getSuggestion(ciphertext: string, key: string) {
             if (freq < 1.5) {
                 break;
             }
-            if ((_key[bigram.charCodeAt(0) - 97] !== '-' && _key[bigram.charCodeAt(0) - 97] !== 't') ||
-                (_key[bigram.charCodeAt(1) - 97] !== '-' && _key[bigram.charCodeAt(1) - 97] !== 'h')) {
+            if ((_key[bigram.charCodeAt(0) - 97] !== '_' && _key[bigram.charCodeAt(0) - 97] !== 't') ||
+                (_key[bigram.charCodeAt(1) - 97] !== '_' && _key[bigram.charCodeAt(1) - 97] !== 'h')) {
                 continue;
             }
             else {
@@ -399,9 +399,9 @@ export function getSuggestion(ciphertext: string, key: string) {
             if (freq < 0.8) {
                 break;
             }
-            if ((_key[trigram.charCodeAt(0) - 97] !== '-' && _key[trigram.charCodeAt(0) - 97] !== 't') ||
-                (_key[trigram.charCodeAt(1) - 97] !== '-' && _key[trigram.charCodeAt(1) - 97] !== 'h') ||
-                (_key[trigram.charCodeAt(2) - 97] !== '-' && _key[trigram.charCodeAt(2) - 97] !== 'e')) {
+            if ((_key[trigram.charCodeAt(0) - 97] !== '_' && _key[trigram.charCodeAt(0) - 97] !== 't') ||
+                (_key[trigram.charCodeAt(1) - 97] !== '_' && _key[trigram.charCodeAt(1) - 97] !== 'h') ||
+                (_key[trigram.charCodeAt(2) - 97] !== '_' && _key[trigram.charCodeAt(2) - 97] !== 'e')) {
                 continue;
             }
             else {
