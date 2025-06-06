@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NInput, NGrid, NGridItem, NCard, NForm, NFormItem, NButton, NAlert, NTabs, NTab, NTable, NScrollbar, NInputGroup, NIcon, NPopover, NFlex, NList, NListItem, NThing, NTag, NResult } from 'naive-ui'
+import { NInput, NGrid, NGridItem, NCard, NForm, NFormItem, NButton, NAlert, NTabs, NTab, NTable, NScrollbar, NInputGroup, NIcon, NPopover, NFlex, NList, NListItem, NThing, NTag } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import { useFormStore } from '../stores/formStore'
 import {
@@ -276,7 +276,6 @@ const keySuggestion = computed(() => {
         }
     }
     catch (error) {
-        console.log(error)
         return [{
             suggestion: `无法生成建议, ${error}`,
             newKey: generatedKey.value,

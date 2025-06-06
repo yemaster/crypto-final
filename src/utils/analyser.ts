@@ -291,7 +291,7 @@ export function getSuggestionByWords(ciphertext: string, key: string) {
             }
             suggestions.push({
                 suggestion: `根据字典分析，${cipherWord} 仅匹配 ${possibleWord}，建议应用该替换`,
-                newKey,
+                newKey: newKey.join(''),
                 possibility: 99
             });
         }
@@ -325,7 +325,7 @@ export function getSuggestionByWords(ciphertext: string, key: string) {
                 newKey[cipherChar.charCodeAt(0) - 97] = _.toLowerCase();
                 suggestions.push({
                     suggestion: `根据字典分析，建议将密钥中的 '${cipherChar}' 映射为 '${_.toLowerCase()}'`,
-                    newKey,
+                    newKey: newKey.join(''),
                     possibility
                 });
             }
@@ -420,5 +420,13 @@ export function getSuggestion(ciphertext: string, key: string) {
         };
     }
 
-    return getSuggestionByWords(ciphertext, key);
+    const suggest1 = getSuggestionByFrequencyAll(ciphertext, key);
+    const suggest2 = getSuggestionByWords(ciphertext, key);
+
+    const suggest = suggest2;
+    if (suggest1.length <= 2) {
+        suggest.push(suggest1[0]);
+    }
+
+    return suggest.sort((a, b) => b.possibility - a.possibility).slice(0, 5); // 只返回前5个建议
 }
