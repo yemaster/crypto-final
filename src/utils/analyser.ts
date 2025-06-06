@@ -1,7 +1,8 @@
 import { encrypt } from './funcs';
-import { characterFrequency, bigramFrequency, trigramFrequency, bigrams } from './data';
-import { en_all_dict } from './en_all';
-import { en_basic_dict } from './en_basic';
+import { characterFrequency, bigramFrequency, trigramFrequency } from '../data/en_freq';
+import { bigrams } from '../data/en_bigram';
+import { en_all_dict } from '../data/en_all';
+import { en_basic_dict } from '../data/en_basic';
 
 export function calcFrequency(text: string, nums: number = 1): Record<string, number> {
     const frequency: Record<string, number> = {};

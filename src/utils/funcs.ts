@@ -62,9 +62,6 @@ export function encrypt(plaintext: string, key: string): string {
     if (_key.length !== 26) {
         throw new Error('密钥长度必须是 26 个字符');
     }
-    if (!/^[a-z]+$/.test(_key)) {
-        throw new Error('密钥必须只包含英文字母');
-    }
 
     const _plaintext = plaintext;
     let ciphertext = '';

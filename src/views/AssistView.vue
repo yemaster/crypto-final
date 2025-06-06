@@ -10,7 +10,7 @@ import { ref, onMounted, computed } from 'vue'
 
 import Chart from 'chart.js/auto';
 
-import { getCharacterFrequency } from '../utils/data'
+import { getCharacterFrequency } from '../data/en_freq'
 import { calcFrequency, getSuggestion, getSuggestionByFrequencyAll, getSuggestionByWords } from '../utils/analyser'
 
 const message = useMessage()

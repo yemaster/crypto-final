@@ -49,8 +49,6 @@ export const trigramFrequency = {
     "for": 0.34
 }
 
-export const bigrams = ["am", "an", "as", "at", "be", "by", "do", "go", "he", "hi", "if", "in", "is", "it", "me", "my", "no", "of", "on", "or", "so", "to", "up", "us", "we", "ox", "ha", "uh", "um", "ma"];
-
 export function getCharacterFrequency(nums: number): {[key: string]: number} {
     switch (nums) {
         case 1:
