@@ -1,4 +1,4 @@
-import { reverseKey } from '../src/utils/funcs';
+import { reverseKey, generateRandomKey } from '../src/utils/funcs';
 import { describe, it, expect } from 'vitest';
 
 describe('reverseKey', () => {
@@ -62,5 +62,23 @@ describe('reverseKey', () => {
         keys.forEach((key, index) => {
             expect(reverseKey(key)).toBe(expectedReversedKeys[index]);
         });
+    });
+});
+
+describe('randomKey', () => {
+    it('should generate a key with 26 unique lowercase letters', () => {
+        const key = generateRandomKey();
+        expect(key.length).toBe(26);
+        const uniqueChars = new Set(key.split(''));
+        expect(uniqueChars.size).toBe(26);
+        expect(/^[a-z]+$/.test(key)).toBe(true); // 确保只包含小写字母
+    });
+
+    it('should generate different keys on multiple calls', () => {
+        const keys = new Set();
+        for (let i = 0; i < 100; i++) {
+            keys.add(generateRandomKey());
+        }
+        expect(keys.size).toBeGreaterThan(1); // 至少生成了两个不同的 key
     });
 });

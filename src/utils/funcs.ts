@@ -57,10 +57,15 @@ export function encrypt(plaintext: string, key: string): string {
     if (!plaintext || !key) {
         throw new Error('请提供明文和密钥');
     }
+    
     const _key = key.toLowerCase(); // 确保密钥是小写字母
     if (_key.length !== 26) {
-        throw new Error('密钥必须是包含 26 个小写字母的字符串');
+        throw new Error('密钥长度必须是 26 个字符');
     }
+    if (!/^[a-z]+$/.test(_key)) {
+        throw new Error('密钥必须只包含英文字母');
+    }
+
     const _plaintext = plaintext;
     let ciphertext = '';
 
