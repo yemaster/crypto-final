@@ -4,8 +4,7 @@ import { useMessage } from 'naive-ui'
 import { useFormStore } from '../stores/formStore'
 import {
     ShuffleOutline,
-    TrashBinOutline,
-    ReturnUpBackOutline
+    TrashBinOutline
 } from '@vicons/ionicons5'
 import { ref, onMounted, computed } from 'vue'
 
@@ -53,6 +52,7 @@ class AnalyserService {
     static resetKey() {
         key.value = Array.from({ length: 26 }, () => "");
         message.success('已重置密钥');
+        updateKey();
     }
 }
 
