@@ -5,6 +5,7 @@ import { useFormStore } from '../stores/formStore'
 import {
     ShuffleOutline,
     TrashBinOutline,
+    ReturnUpBackOutline
 } from '@vicons/ionicons5'
 import { ref, onMounted, computed } from 'vue'
 
@@ -214,7 +215,7 @@ const textComparison = computed(() => {
 const generatedKey = computed(() => {
     let generate = ""
     for (let i = 0; i < 26; i++) {
-       generate += key.value[i] || '_';
+        generate += key.value[i] || '_';
     }
     return generate;
 });
@@ -292,6 +293,39 @@ function applySuggestion(index: number) {
         }
     }
     key.value = newKey;
+    updateKey();
+}
+
+const keyHistory = ref<string[]>([]);
+
+function updateKey() {
+    keyHistory.value.push(generatedKey.value);
+    if (keyHistory.value.length > 100) {
+        keyHistory.value.shift();
+    }
+}
+
+function returnKey() {
+    if (keyHistory.value.length > 0) {
+        keyHistory.value.pop();
+        const newKey = Array.from({ length: 26 }, () => "");
+        if (keyHistory.value.length > 0) {
+            const lastKey = keyHistory.value[keyHistory.value.length - 1];
+            for (let i = 0; i < 26; ++i) {
+                if (lastKey[i] !== '_') {
+                    newKey[i] = lastKey[i];
+                }
+            }
+            key.value = newKey;
+            message.success('已撤销上一步操作');
+        }
+        else {
+            key.value = Array.from({ length: 26 }, () => "");
+            message.success('已撤销到初始状态');
+        }
+    } else {
+        message.warning('没有更多的撤销记录');
+    }
 }
 
 onMounted(() => {
@@ -337,7 +371,8 @@ onMounted(() => {
                                         <tr>
                                             <template v-for="i in 26" :key="i">
                                                 <td v-if="model.ciphertext.includes(String.fromCharCode(i + 96))">
-                                                    <input v-model="key[i - 1]" class="keyInput" maxlength="1">
+                                                    <input v-model="key[i - 1]" class="keyInput" maxlength="1"
+                                                        @change="updateKey()">
                                                 </td>
                                             </template>
                                         </tr>
@@ -373,6 +408,9 @@ onMounted(() => {
                         </n-input-group>
                     </n-form-item>
                     <n-flex>
+                        <n-button type="info" strong @click="returnKey()">
+                            撤销操作
+                        </n-button>
                         <n-button v-for="(sugMode, mode) in suggestionMode"
                             :type="nowSuggestionMode === mode ? 'primary' : 'tertiary'"
                             @click="nowSuggestionMode = mode">{{ sugMode.name }}</n-button>
@@ -383,7 +421,8 @@ onMounted(() => {
                         <n-alert title="破译建议(点击即可自动应用)" type="info" :bordered="false"></n-alert>
                         <n-scrollbar style="height: 300px">
                             <n-alert type="success" title="Wow" v-if="!generatedKey.includes('_')">已经破译完成。</n-alert>
-                            <n-alert type="warning" title="Oops" description="暂时没有建议。" v-else-if="keySuggestion.length === 0">暂时没有建议。</n-alert>
+                            <n-alert type="warning" title="Oops" description="暂时没有建议。"
+                                v-else-if="keySuggestion.length === 0">暂时没有建议。</n-alert>
                             <n-list hoverable clickable v-else>
                                 <n-list-item v-for="(s, i) in keySuggestion" @click="applySuggestion(i)">
                                     <n-thing :title="`参考建议${i + 1}`" content-style="margin-top: 10px;">
