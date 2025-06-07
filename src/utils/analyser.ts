@@ -255,9 +255,9 @@ export function getSuggestionByWords(ciphertext: string, key: string) {
     }
     notInRegExp += "]";
 
-    const cipherWords = ciphertext.match(/\b[a-z\-]+\b/g) || [];
-    const plaintext = encrypt(ciphertext, _key);
-    const plainWords = plaintext.match(/\b[a-z\-_]+\b/g) || [];
+    const cipherWords = ciphertext.toLowerCase().match(/\b[a-z\-]+\b/g) || [];
+    const plaintext = encrypt(ciphertext, _key).toLowerCase();
+    const plainWords = plaintext.match(/\b[a-z_\-]+\b/g) || [];
     const unknownCharsNum = [];
     for (const word of cipherWords) {
         unknownCharsNum.push(word.split('').filter(char => _key[char.charCodeAt(0) - 97] === '_').length);
@@ -278,7 +278,6 @@ export function getSuggestionByWords(ciphertext: string, key: string) {
         const cipherChars = cipherWord.split('');
         const possibleWords = findMatchWords(cipherWord, plainWord, notInRegExp);
         if (Object.keys(possibleWords).length === 1) {
-            // 直接返回对应的建议为 90%
             const possibleWord = Object.keys(possibleWords)[0];
             const possibleChars = possibleWord.split('');
             const newKey = key.split('');
@@ -292,7 +291,7 @@ export function getSuggestionByWords(ciphertext: string, key: string) {
             suggestions.push({
                 suggestion: `根据字典分析，${cipherWord} 仅匹配 ${possibleWord}，建议应用该替换`,
                 newKey: newKey.join(''),
-                possibility: 99
+                possibility: possibleWords[possibleWord] > 1 ? 99 : 85
             });
         }
         else {
