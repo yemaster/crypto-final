@@ -11,6 +11,7 @@ jobs:
 
       - name: Install and Build
         run: |
+          sed -i "s#base: '/'#base: '/crypto-final/'#" vite.config.ts
           npm install
           npm run build
 
