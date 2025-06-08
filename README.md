@@ -16,7 +16,7 @@
 
 ### 使用者
 
-Release 页面下载对应的程序直接打开即可。
+Release 页面下载对应的程序直接打开即可。或者访问在线网址：[https://yemaster.github.io/crypto-final/](https://yemaster.github.io/crypto-final/)
 
 ### 开发者
 
