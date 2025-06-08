@@ -48,4 +48,14 @@ describe('encrypt', () => {
             expect(result).toBe(expectedResults[i]);
         }
     });
+
+    const dict = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()_+[]{}|;:,.<>?';
+    const largePlaintext = dict.repeat(10000); // Repeat the dictionary to create a large plaintext
+    const key = 'abcdefghijklmnopqrstuvwxyz';
+    const expectedCiphertext = dict.repeat(10000);
+    
+    it('should handle large plaintext', () => {
+        const result = encrypt(largePlaintext, key);
+        expect(result).toBe(expectedCiphertext);
+    });
 });
